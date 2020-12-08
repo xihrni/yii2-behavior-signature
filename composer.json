@@ -1,0 +1,21 @@
+{
+  "name": "xihrni/yii2-behavior-signature",
+  "description": "Interface authentication behavior based on Yii2.",
+  "keywords": ["yii2", "behavior", "signature"],
+  "type": "yii2-extension",
+  "license": "BSD-3-Clause",
+  "require": {
+    "yiisoft/yii2": "*"
+  },
+  "authors": [
+    {
+      "name": "xihrni",
+      "email": "xihrni@126.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "xihrni\\yii2\\behaviors\\": "src/"
+    }
+  }
+}
