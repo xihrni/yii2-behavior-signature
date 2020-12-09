@@ -16,6 +16,16 @@ $ composer require xihrni/yii2-behavior-signature
     4. _t：Token，将上面三个参数拼接到 URL 参数最后进行 MD5 加密后再拼接上面三个参数的值，接着拼接客户端秘钥，最后进行 SHA1 加密
 3. 将上面四个参数拼接到需要访问的 URL 参数最后进行请求
 
+### Example
+需要请求的URL
+```text
+http://xxx.com/index/index?page=1&per-page=10
+```
+组装之后的URL
+```text
+http://xxx.com/index/index?page=1&per-page=10&_c=1001&_d=1607475506&_s=5870444392&_t=e9a24fc903d3899b160f15bbb58809b0c901c049
+```
+
 ## Demo
 ### 客户端签名生成
 ```php
