@@ -3,7 +3,7 @@
 namespace xihrni\yii2\behaviors;
 
 use Yii;
-use yii\web\HttpException;
+use yii\web\ForbiddenHttpException;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 
@@ -24,6 +24,11 @@ class SignatureBehavior extends \yii\base\ActionFilter
      * @var array [$optional = []] 过滤操作
      */
     public $optional = [];
+
+    /**
+     * @var bool [$isHint = false] 是否提示具体错误
+     */
+    public $isHint = false;
 
     /**
      * @var array $clientSecrets 客户端秘钥集合
@@ -77,17 +82,17 @@ class SignatureBehavior extends \yii\base\ActionFilter
 
         // 判断参数是否存在
         if (!isset($data['_c']) || !isset($data['_d']) || !isset($data['_s']) || !isset($data['_t'])) {
-            throw new HttpException(403, '参数');
+            throw new ForbiddenHttpException($this->isHint ? '参数' : 403);
         }
 
         // 判断时间不可大于60秒
         if (time() - $data['_d'] > 60) {
-            throw new HttpException(403, '时间');
+            throw new ForbiddenHttpException($this->isHint ? '时间' : 403);
         }
 
         // 判断计算数值
         if (ceil(substr($data['_d'], -6) * 12345.6789) != $data['_s']) {
-            throw new HttpException(403, '计算数值');
+            throw new ForbiddenHttpException($this->isHint ? '计算数值' : 403);
         }
 
         // 判断客户端ID
@@ -95,14 +100,14 @@ class SignatureBehavior extends \yii\base\ActionFilter
         $clientSecret  = $clientSecrets[$data['_c']];
 
         if (!$clientSecret) {
-            throw new HttpException(403, '客户端ID');
+            throw new ForbiddenHttpException($this->isHint ? '客户端ID' : 403);
         }
 
         // 判断Token
         $url   = md5(str_replace('&_t=' . $data['_t'], '', $fullUrl));
         $token = sha1($url . $data['_c'] . $data['_d'] . $data['_s'] . $clientSecret['secret']);
         if ($token != $data['_t']) {
-            throw new HttpException(403, 'Token');
+            throw new ForbiddenHttpException($this->isHint ? 'Token' : 403);
         }
 
         return true;
